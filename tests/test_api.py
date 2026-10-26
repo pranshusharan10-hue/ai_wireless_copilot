@@ -102,18 +102,64 @@ def test_run_simulation_rejects_unsupported_modulation():
     assert response.status_code == 422
 
 
-def test_run_simulation_rejects_unsupported_channel():
+@pytest.mark.parametrize("channel", ["AWGN", "Rayleigh", "Rician"])
+def test_run_simulation_accepts_supported_channels(channel):
     payload = {
-        "prompt": "Simulate BPSK over Rayleigh",
+        "prompt": f"Simulate BPSK over {channel}",
         "modulation": "BPSK",
-        "channel": "Rayleigh",
+        "channel": channel,
         "snr_start_db": 0,
         "snr_stop_db": 4,
         "snr_step_db": 2,
-        "num_bits": 10000,
+        "num_bits": 10_000,
         "random_seed": 42,
     }
 
     response = client.post("/api/v1/simulations/run", json=payload)
+
+    assert response.status_code == 200
+    assert response.json()["channel"] == channel
+
+
+# phase 2 tests
+
+
+@pytest.mark.parametrize("channel", ["AWGN", "Rayleigh", "Rician"])
+def test_run_simulation_supports_phase2_channels(channel):
+    response = client.post(
+        "/api/v1/simulations/run",
+        json={
+            "prompt": f"Simulate BPSK over {channel}",
+            "modulation": "BPSK",
+            "channel": channel,
+            "snr_start_db": 0,
+            "snr_stop_db": 4,
+            "snr_step_db": 2,
+            "num_bits": 10_000,
+            "random_seed": 42,
+        },
+    )
+
+    assert response.status_code == 200
+    data = response.json()
+    assert data["channel"] == channel
+    assert len(data["ber_simulated"]) == 3
+    assert len(data["ber_theoretical"]) == 3
+    assert all(
+        isinstance(point, list) and len(point) == 2
+        for point in data["constellation_received"]
+    )
+
+
+def test_run_simulation_rejects_16qam():
+    response = client.post(
+        "/api/v1/simulations/run",
+        json={
+            "prompt": "Test 16QAM",
+            "modulation": "16QAM",
+            "channel": "AWGN",
+            "num_bits": 10_000,
+        },
+    )
 
     assert response.status_code == 422

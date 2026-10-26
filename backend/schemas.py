@@ -15,6 +15,7 @@ class SimulationRequest(BaseModel):
     snr_step_db: float = 2
     num_bits: int = Field(default=100_000, ge=1000, le=2_000_000)
     random_seed: int = 42
+    rician_k_db: float = Field(default=6.0, ge=0, le=30)
 
     @model_validator(mode="after")
     def validate_snr_range(self):
@@ -28,3 +29,7 @@ class SimulationRequest(BaseModel):
             raise ValueError("SNR range must remain between -20 and 60 dB")
 
         return self
+
+
+# Configure the dominant-path strength for Rician fading.
+# Higher K means a stronger dominant path relative to scattered paths.

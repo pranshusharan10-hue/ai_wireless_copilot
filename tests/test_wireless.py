@@ -109,3 +109,73 @@ def test_awgn_rejects_invalid_bits_per_symbol():
 
     with pytest.raises(ValueError, match="bits_per_symbol"):
         add_awgn(np.array([1 + 0j]), 0, 3, rng)
+
+
+# phase 2 tests
+
+
+@pytest.mark.parametrize("channel", ["AWGN", "Rayleigh", "Rician"])
+@pytest.mark.parametrize("modulation", ["BPSK", "QPSK"])
+def test_phase2_simulation_supports_channels(channel, modulation):
+    result = simulate_ber(
+        modulation=modulation,
+        channel=channel,
+        ebn0_db=[0, 4, 8],
+        num_bits=100_000,
+        random_seed=42,
+    )
+
+    assert result["channel"] == channel
+    assert len(result["ber_simulated"]) == 3
+    assert len(result["ber_theoretical"]) == 3
+    assert len(result["error_counts"]) == 3
+    assert all(0 <= ber <= 1 for ber in result["ber_simulated"])
+    assert all(0 <= ber <= 0.5 for ber in result["ber_theoretical"])
+
+
+@pytest.mark.parametrize("channel", ["AWGN", "Rayleigh", "Rician"])
+def test_theoretical_ber_decreases_with_snr(channel):
+    ber = theoretical_ber("BPSK", [0, 5, 10], channel=channel)
+
+    assert ber[0] > ber[1] > ber[2]
+
+
+def test_rayleigh_ber_is_worse_than_awgn():
+    snr = [0, 5, 10]
+
+    awgn_ber = theoretical_ber("BPSK", snr, channel="AWGN")
+    rayleigh_ber = theoretical_ber("BPSK", snr, channel="Rayleigh")
+
+    assert np.all(rayleigh_ber > awgn_ber)
+
+
+def test_rician_k_factor_is_returned():
+    result = simulate_ber(
+        modulation="BPSK",
+        channel="Rician",
+        ebn0_db=[0, 4],
+        num_bits=10_000,
+        random_seed=42,
+        rician_k_db=8,
+    )
+
+    assert result["rician_k_db"] == 8
+    assert result["receiver_equalization"] is True
+
+
+def test_fading_simulation_is_reproducible():
+    first = simulate_ber(
+        channel="Rayleigh",
+        ebn0_db=[0, 4],
+        num_bits=10_000,
+        random_seed=123,
+    )
+    second = simulate_ber(
+        channel="Rayleigh",
+        ebn0_db=[0, 4],
+        num_bits=10_000,
+        random_seed=123,
+    )
+
+    assert first["ber_simulated"] == second["ber_simulated"]
+    assert first["error_counts"] == second["error_counts"]
