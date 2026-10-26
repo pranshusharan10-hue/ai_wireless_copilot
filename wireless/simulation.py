@@ -167,7 +167,10 @@ def simulate_ber(
         "num_bits": usable_bits,
         "random_seed": random_seed,
         "constellation_received": (
-            received_at_last_snr[:200].tolist()
+            [
+                [float(symbol.real), float(symbol.imag)]
+                for symbol in received_at_last_snr[:200]
+            ]
             if received_at_last_snr is not None
             else []
         ),
