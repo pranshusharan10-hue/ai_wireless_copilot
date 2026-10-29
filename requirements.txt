@@ -8,3 +8,4 @@ matplotlib
 pytest
 ruff
 httpx
+httpx2==2.16.0

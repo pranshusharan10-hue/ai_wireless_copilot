@@ -31,5 +31,12 @@ class SimulationRequest(BaseModel):
         return self
 
 
+class CopilotRequest(BaseModel):
+    """Natural-language request submitted to the AI copilot."""
+
+    prompt: str = Field(min_length=1, max_length=2000)
+    include_constellation: bool = False
+
+
 # Configure the dominant-path strength for Rician fading.
 # Higher K means a stronger dominant path relative to scattered paths.
