@@ -77,10 +77,15 @@ def extract_simulation_config(
     try:
         content = response.json()["message"]["content"]
         config = json.loads(content)
+
     except (ValueError, KeyError, TypeError) as exc:
-        raise ValueError("Ollama returned an invalid JSON configuration.") from exc
+        raise RuntimeError(
+            "Ollama returned an invalid response. Please retry."
+        ) from exc
 
     if not isinstance(config, dict):
-        raise ValueError("The model response must be a JSON object.")
+        raise RuntimeError(
+            "Ollama returned an invalid configuration format. Please retry."
+        )
 
     return config

@@ -1,4 +1,5 @@
 # integration tests
+import pytest
 from fastapi.testclient import TestClient
 
 import backend.main as main
@@ -95,7 +96,9 @@ def test_copilot_handles_ollama_failure(monkeypatch):
     )
 
     assert response.status_code == 503
-    assert response.json()["detail"] == "Ollama is unavailable"
+    assert response.json()["detail"] == (
+        "The AI configuration service is currently unavailable."
+    )
 
 
 def test_copilot_rejects_empty_prompt():
@@ -157,3 +160,45 @@ def test_copilot_includes_constellation_when_requested(monkeypatch):
 
     assert response.status_code == 200
     assert response.json()["simulation"]["constellation_received"] == constellation
+
+
+def test_copilot_handles_rag_failure(monkeypatch):
+    def fail_retrieval(prompt, top_k=3):
+        raise RuntimeError("Embedding service unavailable")
+
+    monkeypatch.setattr(main, "retrieve", fail_retrieval)
+
+    response = client.post(
+        "/api/v1/copilot/run",
+        json={"prompt": "Simulate BPSK over AWGN"},
+    )
+
+    assert response.status_code == 503
+    assert response.json()["detail"] == (
+        "Wireless knowledge retrieval is currently unavailable."
+    )
+
+
+def test_copilot_does_not_run_invalid_configuration(monkeypatch):
+    monkeypatch.setattr(main, "retrieve", fake_knowledge)
+
+    monkeypatch.setattr(
+        main,
+        "extract_simulation_config",
+        lambda prompt, context="": {
+            **fake_config(prompt),
+            "modulation": "16QAM",
+        },
+    )
+
+    def simulation_must_not_run(request):
+        pytest.fail("Simulator must not run with an invalid configuration")
+
+    monkeypatch.setattr(main, "execute_simulation", simulation_must_not_run)
+
+    response = client.post(
+        "/api/v1/copilot/run",
+        json={"prompt": "Simulate 16QAM over Rayleigh fading"},
+    )
+
+    assert response.status_code == 422

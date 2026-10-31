@@ -66,7 +66,7 @@ def load_documents() -> list[dict[str, str]]:
             )
 
     if not documents:
-        raise ValueError(f"No Markdown documents found in {KNOWLEDGE_DIR}")
+        raise RuntimeError("The wireless knowledge base is empty or unavailable.")
 
     return documents
 
@@ -90,9 +90,9 @@ def retrieve(
         document_vectors = embed_texts([document["text"] for document in documents])
         query_vector = embed_texts([query])[0]
 
-    except httpx.HTTPError as exc:
+    except (httpx.HTTPError, ValueError, KeyError, TypeError) as exc:
         raise RuntimeError(
-            "Could not retrieve embeddings from Ollama. "
+            "Could not retrieve valid embeddings from Ollama. "
             "Check that Ollama is running and the embedding model "
             "is available."
         ) from exc

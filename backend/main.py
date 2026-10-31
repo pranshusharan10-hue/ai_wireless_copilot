@@ -1,6 +1,8 @@
 # It preserves your three existing endpoints and adds the new copilot endpoint.
 """FastAPI endpoints for wireless simulation and AI copilot."""
 
+import logging
+
 import numpy as np
 from fastapi import FastAPI, HTTPException
 
@@ -10,6 +12,8 @@ from llm.validator import validate_simulation_config
 from rag.retriever import retrieve
 from wireless.simulation import Modulation as WirelessModulation
 from wireless.simulation import simulate_ber
+
+logger = logging.getLogger(__name__)
 
 app = FastAPI(
     title="AI-Wireless Copilot API",
@@ -82,31 +86,41 @@ def run_simulation(request: SimulationRequest):
 def run_copilot(request: CopilotRequest):
     """Interpret a prompt, retrieve knowledge, validate, and simulate."""
 
+    # 1. Retrieve wireless knowledge.
     try:
-        # 1. Retrieve wireless knowledge relevant to the user's prompt.
         knowledge = retrieve(request.prompt, top_k=3)
 
+    except RuntimeError as exc:
+        logger.exception("RAG retrieval failed")
+        raise HTTPException(
+            status_code=503,
+            detail="Wireless knowledge retrieval is currently unavailable.",
+        ) from exc
+
+    # 2. Extract configuration using the LLM.
+    try:
         context = "\n\n".join(
             f"Source: {item['source']}\n{item['text']}" for item in knowledge
         )
 
-        # 2. Ask the LLM to extract the simulation settings.
         config = extract_simulation_config(
             request.prompt,
             context=context,
         )
 
-        # 3. Validate the model's output before execution.
+    except RuntimeError as exc:
+        logger.exception("LLM configuration extraction failed")
+        raise HTTPException(
+            status_code=503,
+            detail="The AI configuration service is currently unavailable.",
+        ) from exc
+
+    # 3. Validate the extracted configuration.
+    try:
         validated = validate_simulation_config(
             request.prompt,
             config,
         )
-
-    except RuntimeError as exc:
-        raise HTTPException(
-            status_code=503,
-            detail=str(exc),
-        ) from exc
 
     except ValueError as exc:
         raise HTTPException(
@@ -114,20 +128,21 @@ def run_copilot(request: CopilotRequest):
             detail=str(exc),
         ) from exc
 
-    # 4. Run only the trusted, existing simulation implementation.
+    # 4. Execute only the trusted simulation implementation.
     try:
         simulation = execute_simulation(validated)
 
         if not request.include_constellation:
             simulation.pop("constellation_received", None)
 
-    except (ValueError, RuntimeError) as exc:
+    except Exception as exc:
+        logger.exception("Wireless simulation execution failed")
         raise HTTPException(
             status_code=500,
-            detail=f"Simulation failed: {exc}",
+            detail="An internal error occurred while running the simulation.",
         ) from exc
 
-    # 5. Return the configuration, results, and retrieved references.
+    # 5. Return configuration, results, and retrieved references.
     return {
         "status": "success",
         "configuration": validated.model_dump(),
