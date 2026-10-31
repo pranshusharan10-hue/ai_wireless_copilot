@@ -231,4 +231,47 @@ Record dependency changes in `requirements.txt`. Keep model names, runtime confi
 - Configuration values are validated before the trusted simulation engine runs.
 - Unsupported modulation schemes must not bypass validation.
 - RAG results are reference material and must not override explicit user parameters.
-- The
+
+### Phase 4 — Controlled Execution and Automatic Correction
+
+**Objective:** Improve the reliability of the AI copilot by evaluating LLM configuration extraction, handling failures consistently, and introducing bounded automatic correction.
+
+#### Phase 4.1A — Benchmark Dataset
+- [x] Create a benchmark dataset containing valid and invalid wireless simulation prompts.
+- [x] Define expected configurations for each benchmark case.
+- [x] Add dataset structure and uniqueness checks.
+- [x] Verify valid and invalid configurations using the existing configuration validator.
+
+#### Phase 4.2 — Error Classification and Handling
+- [x] Separate RAG retrieval, LLM extraction, configuration validation, and simulation execution errors.
+- [x] Return HTTP 422 for invalid simulation configurations.
+- [x] Return HTTP 503 for LLM and RAG service failures.
+- [x] Return HTTP 500 for unexpected simulation execution failures.
+- [x] Add server-side exception logging and safe API error messages.
+- [x] Add regression tests for RAG failures and invalid configurations reaching the simulator.
+
+#### Phase 4.1B — Actual LLM Benchmark Evaluation
+- [ ] Evaluate the actual local Ollama model against the benchmark prompts.
+- [ ] Compare extracted configurations against expected configurations.
+- [ ] Calculate exact-match and field-level accuracy.
+- [ ] Measure validation success, invalid-output rate, and extraction failures.
+- [ ] Generate a machine-readable evaluation report.
+
+#### Phase 4.3 — Bounded Automatic Correction
+- [ ] Implement a maximum of one correction attempt for invalid LLM configurations.
+- [ ] Revalidate corrected configurations before simulation.
+- [ ] Prevent infinite correction loops.
+- [ ] Ensure invalid configurations never reach the simulation engine.
+
+#### Phase 4.4 — Safety and Regression Testing
+- [ ] Test malformed LLM responses and unexpected service failures.
+- [ ] Verify correction behavior and retry limits.
+- [ ] Run the complete regression test suite.
+- [ ] Run Ruff lint and formatting checks.
+
+#### Phase 4.5 — Documentation and Release
+- [ ] Update README with implementation details, API behavior, evaluation results, and limitations.
+- [ ] Review changes and verify no secrets or unrelated files are committed.
+- [ ] Commit and push the completed Phase 4 implementation.
+
+**Phase 4 completion criteria:** All implementation, evaluation, safety, regression, documentation, and Git acceptance checks must pass.
