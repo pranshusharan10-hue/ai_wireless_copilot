@@ -13,6 +13,14 @@ OLLAMA_BASE_URL = os.getenv(
 OLLAMA_MODEL = os.getenv("OLLAMA_MODEL", "qwen2.5:3b")
 
 
+class LLMServiceError(RuntimeError):
+    """Raised when the Ollama service cannot process a request."""
+
+
+class LLMResponseError(RuntimeError):
+    """Raised when Ollama returns a malformed or incomplete response."""
+
+
 SYSTEM_PROMPT = """
 You are a wireless simulation parameter extraction engine.
 
@@ -150,6 +158,7 @@ Return all seven schema fields in every response.
 def extract_simulation_config(
     prompt: str,
     context: str = "",
+    retry_feedback: str | None = None,
 ) -> dict:
     """Extract configuration using Ollama and optional RAG context."""
 
@@ -161,6 +170,14 @@ def extract_simulation_config(
     if context.strip():
         user_message += (
             f"\n\nReference context from the wireless knowledge base:\n{context}"
+        )
+
+    if retry_feedback:
+        user_message += (
+            "\n\nCORRECTION REQUIRED:\n"
+            f"{retry_feedback}\n"
+            "Return a complete JSON object containing all seven required fields. "
+            "Do not include Markdown or explanations."
         )
 
     try:
@@ -181,20 +198,54 @@ def extract_simulation_config(
         response.raise_for_status()
 
     except httpx.HTTPError as exc:
-        raise RuntimeError(f"Could not get a response from Ollama: {exc}") from exc
+        raise LLMServiceError(f"Could not get a response from Ollama: {exc}") from exc
 
     try:
-        content = response.json()["message"]["content"]
+        response_data = response.json()
+
+    except (ValueError, TypeError) as exc:
+        raise LLMResponseError("Ollama returned an invalid JSON response.") from exc
+
+    if not isinstance(response_data, dict):
+        raise LLMResponseError("Ollama returned an invalid response structure.")
+
+    message = response_data.get("message")
+
+    if not isinstance(message, dict):
+        raise LLMResponseError("Ollama response is missing the message object.")
+
+    content = message.get("content")
+
+    if not isinstance(content, str) or not content.strip():
+        raise LLMResponseError("Ollama response is missing valid message content.")
+
+    try:
         config = json.loads(content)
 
-    except (ValueError, KeyError, TypeError) as exc:
-        raise RuntimeError(
-            "Ollama returned an invalid response. Please retry."
-        ) from exc
+    except json.JSONDecodeError as exc:
+        raise LLMResponseError("Ollama returned malformed configuration JSON.") from exc
 
     if not isinstance(config, dict):
-        raise RuntimeError(
-            "Ollama returned an invalid configuration format. Please retry."
+        raise LLMResponseError(
+            "Ollama returned a configuration that is not a JSON object."
+        )
+
+    required_fields = {
+        "modulation",
+        "channel",
+        "snr_start_db",
+        "snr_stop_db",
+        "snr_step_db",
+        "num_bits",
+        "rician_k_db",
+    }
+
+    missing_fields = required_fields - config.keys()
+
+    if missing_fields:
+        raise LLMResponseError(
+            "Ollama configuration is missing required fields: "
+            + ", ".join(sorted(missing_fields))
         )
 
     return config

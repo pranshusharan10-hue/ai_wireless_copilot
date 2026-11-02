@@ -7,7 +7,11 @@ import numpy as np
 from fastapi import FastAPI, HTTPException
 
 from backend.schemas import CopilotRequest, SimulationRequest
-from llm.client import extract_simulation_config
+from llm.client import (
+    LLMResponseError,
+    LLMServiceError,
+    extract_simulation_config,
+)
 from llm.validator import validate_simulation_config
 from rag.retriever import retrieve
 from wireless.simulation import Modulation as WirelessModulation
@@ -98,18 +102,43 @@ def run_copilot(request: CopilotRequest):
         ) from exc
 
     # 2. Extract configuration using the LLM.
+    context = "\n\n".join(
+        f"Source: {item['source']}\n{item['text']}" for item in knowledge
+    )
+
     try:
-        context = "\n\n".join(
-            f"Source: {item['source']}\n{item['text']}" for item in knowledge
-        )
+        try:
+            config = extract_simulation_config(
+                request.prompt,
+                context=context,
+            )
 
-        config = extract_simulation_config(
-            request.prompt,
-            context=context,
-        )
+        except LLMResponseError as first_error:
+            logger.warning(
+                "Malformed LLM response. Attempting one bounded retry: %s",
+                first_error,
+            )
 
-    except RuntimeError as exc:
-        logger.exception("LLM configuration extraction failed")
+            config = extract_simulation_config(
+                request.prompt,
+                context=context,
+                retry_feedback=(
+                    "Your previous response was malformed or incomplete. "
+                    "Return valid JSON with all seven required configuration "
+                    "fields. Preserve every explicitly requested parameter "
+                    "exactly, including invalid values."
+                ),
+            )
+
+    except LLMResponseError as exc:
+        logger.exception("LLM response remained invalid after retry")
+        raise HTTPException(
+            status_code=502,
+            detail="The AI service returned an invalid configuration response.",
+        ) from exc
+
+    except LLMServiceError as exc:
+        logger.exception("LLM configuration service failed")
         raise HTTPException(
             status_code=503,
             detail="The AI configuration service is currently unavailable.",
