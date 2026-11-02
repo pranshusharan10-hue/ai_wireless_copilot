@@ -45,3 +45,7 @@ checkpoints/
 
 # Logs
 *.log
+
+# Local project inspection files
+project_structure.txt
+project_tree.txt
