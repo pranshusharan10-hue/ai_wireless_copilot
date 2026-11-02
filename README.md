@@ -1,73 +1,164 @@
-# AI-Wireless Copilot
+﻿# AI-Wireless Copilot
 
 **LLM-Assisted Wireless Communication Simulation and Optimization**
 
-## Overview
+AI-Wireless Copilot is a domain-specific AI engineering project that converts natural-language wireless communication requests into structured simulation configurations, validates those configurations, executes trusted wireless simulations, and returns quantitative results with relevant wireless-domain knowledge.
 
-AI-Wireless Copilot is a domain-specific AI engineering project that translates natural-language wireless communication requests into validated simulation configurations, executes trusted wireless simulations, retrieves relevant wireless-domain knowledge, and returns quantitative results with engineering explanations.
+The project brings together wireless communication theory, Python-based simulation, local large language models (LLMs), retrieval-augmented generation (RAG), API development, scientific validation, and controlled LLM evaluation.
 
-The project combines wireless communication theory, Python-based simulation, large language models (LLMs), retrieval-augmented generation (RAG), API development, scientific validation, and constrained optimization.
+---
 
-## Current Status
+## Project Status
 
-**Current milestone: Phase 4 — Controlled Execution and Automatic Correction**
+**Current milestone: Phase 4 â€” Controlled Execution, Evaluation, and Safety**
 
-Current focus: LLM benchmarking, evaluation reliability, and bounded correction.
+**Current activity: Phase 4.5 â€” Documentation and release preparation**
 
-Implemented and tested capabilities include:
+Implemented capabilities:
 
 - BPSK and QPSK modulation and demodulation.
-- BER-versus-Eb/N0 simulations over AWGN, Rayleigh, and Rician channels.
+- BER-versus-Eb/N0 simulation over AWGN, Rayleigh, and Rician fading channels.
 - Theoretical BER calculations and comparison with simulated results.
-- Configurable simulation parameters, random seeds, and Rician K-factor.
-- FastAPI endpoints for request validation, simulation, and natural-language copilot requests.
+- Configurable SNR ranges, bit counts, random seeds, and Rician K-factor.
+- FastAPI endpoints for request validation, direct simulation, and natural-language copilot requests.
 - Local LLM integration through Ollama for extracting structured simulation configurations.
 - Wireless-domain knowledge retrieval using Ollama embeddings and cosine similarity.
-- Pydantic-based configuration validation before simulation execution.
+- Pydantic-based validation before simulation execution.
+- Bounded correction: at most one correction attempt for an invalid LLM-generated configuration.
+- Defensive handling of malformed responses and LLM, RAG, validation, and simulation failures.
+- Security regression tests for untrusted prompts, retrieved context, malformed configurations, and safe error responses.
+- Development and held-out benchmark datasets for evaluating LLM configuration extraction.
+- Machine-readable benchmark reports.
 - Compact copilot responses by default, with optional constellation samples.
-- Automated tests for the simulation engine, API, configuration validation, RAG, and copilot workflow.
 
-Latest verified baseline: **59 tests passed**. Ruff lint and formatting checks passed, and `git diff --check` reported no whitespace errors.
+**Latest recorded verification:** 102 tests passed. Ruff lint and formatting checks passed, and `git diff --check` reported no whitespace errors. Re-run the checks locally before treating this as the current result for a new code revision.
+
+---
+
 ## Technology Stack
 
-- **Language:** Python 3.11
-- **Simulation and numerical computing:** NumPy, SciPy
-- **Visualization:** Matplotlib
-- **API:** FastAPI, Uvicorn
-- **Data validation:** Pydantic
-- **LLM runtime:** Ollama
-- **Local LLM:** `qwen2.5:3b`
-- **Embedding model:** `nomic-embed-text`
-- **Retrieval:** Embeddings and cosine similarity over a Markdown knowledge base
-- **Testing:** Pytest, HTTPX, HTTPX2
-- **Code quality:** Ruff
-- **Planned interface:** Streamlit
+| Area | Technology |
+|---|---|
+| Language | Python 3.11 |
+| Simulation and numerical computing | NumPy, SciPy |
+| Visualization | Matplotlib |
+| API | FastAPI, Uvicorn |
+| Data validation | Pydantic |
+| LLM runtime | Ollama |
+| Local LLM | `qwen2.5:3b` |
+| Embedding model | `nomic-embed-text` |
+| Retrieval | Embeddings and cosine similarity |
+| Knowledge base | Markdown |
+| Testing | Pytest, HTTPX |
+| Code quality | Ruff |
+
+The project currently exposes its functionality through a FastAPI backend. A Streamlit interface is not listed as an implemented capability.
+
+---
 
 ## Architecture
 
-The current copilot workflow is:
+The copilot workflow is:
 
-1. Receive a natural-language simulation request.
-2. Retrieve relevant wireless-domain knowledge.
-3. Ask the LLM to extract a structured simulation configuration.
-4. Validate the configuration using the project's trusted validation logic.
-5. Execute the simulation using the existing Python simulation engine.
-6. Return the configuration, simulation metrics, retrieved knowledge, and a short explanation.
+1. **Receive a request:** The API receives a natural-language wireless simulation request.
+2. **Retrieve domain knowledge:** The RAG component retrieves relevant material from the wireless knowledge base.
+3. **Extract configuration:** The local Ollama model converts the request into structured simulation parameters.
+4. **Validate configuration:** Trusted application validation checks the extracted values and rejects unsupported or invalid configurations.
+5. **Correct boundedly, if needed:** An invalid LLM-generated configuration can trigger at most one correction attempt. The corrected result is validated again.
+6. **Execute trusted simulation:** The validated configuration is passed to the existing Python simulation engine.
+7. **Return results:** The API returns the configuration, simulation metrics, relevant retrieved context, and an explanation.
 
-The LLM does not directly execute generated Python code. It proposes configuration values; the application validates those values and passes them to the trusted simulation engine.
+**Execution boundary:** The LLM proposes configuration values; it does not execute generated Python code. Retrieved documents and model output are treated as untrusted input. Only validated configuration values are passed to the trusted simulation implementation.
 
-## Development Roadmap
+---
 
-- [x] **Phase 0 — Environment and Project Foundation:** Repository structure, development environment, API foundation, and test setup.
-- [x] **Phase 1 — Wireless Simulation Foundation:** BPSK/QPSK simulation over AWGN, modulation and demodulation, BER calculation, and simulation API.
-- [x] **Phase 2 — Channel Modeling and Scientific Validation:** Rayleigh/Rician fading, channel equalization, theoretical BER comparisons, and regression tests.
-- [x] **Phase 3 — LLM Integration and Wireless-Domain RAG:** Ollama-based configuration extraction, knowledge retrieval, validation, copilot API integration, and compact responses.
-- [ ] **Phase 4 — Controlled Execution and Automatic Correction:** Improve failure diagnosis and implement bounded, validated correction workflows.
-- [ ] **Phase 5 — Wireless Optimization:** Explore adaptive modulation and parameter selection under BER or other communication constraints.
-- [ ] **Phase 6 — Optional Fine-Tuning and Model Evaluation:** Evaluate whether fine-tuning or parameter-efficient methods such as QLoRA improve configuration extraction and domain-specific performance.
-- [ ] **Phase 7 — Benchmarking, Interface, and Final Documentation:** Build evaluation datasets, compare models, develop the user interface, and prepare final project documentation.
+## Supported Simulation Scope
 
-A phase is considered complete only after its implementation, tests, documentation, and Git changes have been reviewed.
+### Modulation
+
+- BPSK
+- QPSK
+
+### Channel models
+
+- AWGN
+- Rayleigh fading
+- Rician fading
+
+### Simulation outputs
+
+- Simulated bit error rate (BER)
+- Theoretical BER where supported by the implementation
+- BER-versus-Eb/N0 results
+- Simulation configuration and error counts
+- Optional received constellation samples
+
+Although the request schema may contain additional modulation labels, the current simulation execution path supports **BPSK and QPSK only**. Do not assume that 16QAM or 64QAM simulation is implemented.
+
+---
+
+## Project Structure
+
+```text
+ai_wireless_copilot/
+â”‚
+â”œâ”€â”€ app/
+â”‚
+â”œâ”€â”€ backend/
+â”‚   â”œâ”€â”€ main.py
+â”‚   â””â”€â”€ schemas.py
+â”‚
+â”œâ”€â”€ evaluation/
+â”‚   â””â”€â”€ reports/
+â”‚       â”œâ”€â”€ development/
+â”‚       â””â”€â”€ heldout/
+â”‚
+â”œâ”€â”€ experiments/
+â”‚   â”œâ”€â”€ ber_curve.png
+â”‚   â””â”€â”€ qpsk_ber_curve.png
+â”‚
+â”œâ”€â”€ llm/
+â”‚   â”œâ”€â”€ client.py
+â”‚   â””â”€â”€ validator.py
+â”‚
+â”œâ”€â”€ rag/
+â”‚   â”œâ”€â”€ knowledge_base/
+â”‚   â”‚   â””â”€â”€ wireless_basics.md
+â”‚   â””â”€â”€ retriever.py
+â”‚
+â”œâ”€â”€ runner/
+â”‚
+â”œâ”€â”€ scripts/
+â”‚   â””â”€â”€ evaluate_llm.py
+â”‚
+â”œâ”€â”€ tests/
+â”‚   â”œâ”€â”€ fixtures/
+â”‚   â”‚   â”œâ”€â”€ copilot_benchmark.json
+â”‚   â”‚   â””â”€â”€ copilot_heldout.json
+â”‚   â”œâ”€â”€ test_api.py
+â”‚   â”œâ”€â”€ test_benchmark_dataset.py
+â”‚   â”œâ”€â”€ test_copilot.py
+â”‚   â”œâ”€â”€ test_evaluate_llm.py
+â”‚   â”œâ”€â”€ test_llm_client.py
+â”‚   â”œâ”€â”€ test_llm_validator.py
+â”‚   â”œâ”€â”€ test_rag.py
+â”‚   â””â”€â”€ test_wireless.py
+â”‚
+â”œâ”€â”€ training/
+â”‚
+â”œâ”€â”€ validation/
+â”‚
+â”œâ”€â”€ wireless/
+â”‚   â””â”€â”€ simulation.py
+â”‚
+â”œâ”€â”€ pyproject.toml
+â”œâ”€â”€ requirements.txt
+â””â”€â”€ README.md
+```
+
+Some directories are currently package or workspace placeholders. The tree above focuses on the main source, evaluation, and test files rather than virtual-environment and cache files.
+
+---
 
 ## Prerequisites
 
@@ -76,30 +167,40 @@ A phase is considered complete only after its implementation, tests, documentati
 - Ollama installed and available from the terminal
 - Sufficient system memory to run the selected local models
 
-## Setup
+The default local LLM is `qwen2.5:3b`. The embedding model is `nomic-embed-text`.
+
+---
+
+## Installation and Setup
 
 ### 1. Clone the repository
 
-```bash
-git clone <repository-url>
+```powershell
+git clone https://github.com/pranshusharan10-hue/ai_wireless_copilot.git
 cd ai_wireless_copilot
 ```
 
-Replace `<repository-url>` with the actual Git repository URL.
-
-### 2. Create and activate the Python environment
-
-Windows PowerShell:
+### 2. Create and activate a virtual environment
 
 ```powershell
 python -m venv .venv
 .\.venv\Scripts\Activate.ps1
+```
+
+Confirm that the environment is using Python 3.11:
+
+```powershell
+python --version
+```
+
+### 3. Install dependencies
+
+```powershell
+python -m pip install --upgrade pip
 python -m pip install -r requirements.txt
 ```
 
-If PowerShell prevents environment activation, use an appropriate execution-policy setting for your environment or activate the environment through your IDE.
-
-### 3. Download the Ollama models
+### 4. Pull the Ollama models
 
 Make sure Ollama is installed and running, then execute:
 
@@ -108,9 +209,9 @@ ollama pull qwen2.5:3b
 ollama pull nomic-embed-text
 ```
 
-The first model extracts simulation configuration from natural language. The second generates embeddings for wireless-domain retrieval.
+The LLM extracts structured simulation configurations from natural-language requests. The embedding model creates vectors used by the wireless-domain retrieval component.
 
-### 4. Start the API
+### 5. Start the API
 
 From the project root, with the virtual environment activated:
 
@@ -118,21 +219,31 @@ From the project root, with the virtual environment activated:
 python -m uvicorn backend.main:app --reload
 ```
 
-Open the interactive API documentation at:
+The API will be available at:
 
-`http://127.0.0.1:8000/docs`
+- Interactive API documentation: `http://127.0.0.1:8000/docs`
+- Health check: `http://127.0.0.1:8000/health`
 
-Check that the service is running using:
+The copilot endpoint requires the local Ollama service and the configured models to be available.
 
-`http://127.0.0.1:8000/health`
+---
 
-## API Usage
+## API Reference
 
-### Validate a simulation request
+The current API exposes the following main endpoints.
 
-Endpoint: `POST /api/v1/simulations/validate`
+| Method | Endpoint | Purpose |
+|---|---|---|
+| GET | `/health` | Check API health |
+| POST | `/api/v1/simulations/validate` | Validate a supplied simulation configuration |
+| POST | `/api/v1/simulations/run` | Run a simulation from a supplied configuration |
+| POST | `/api/v1/copilot/run` | Run the natural-language copilot workflow |
 
-Example:
+### 1. Validate a simulation request
+
+`POST /api/v1/simulations/validate`
+
+Example request:
 
 ```json
 {
@@ -147,17 +258,17 @@ Example:
 }
 ```
 
-### Run a direct simulation
+### 2. Run a direct simulation
 
-Endpoint: `POST /api/v1/simulations/run`
+`POST /api/v1/simulations/run`
 
-This endpoint runs a simulation from an explicitly supplied configuration. The currently supported modulation schemes for execution are BPSK and QPSK.
+This endpoint runs a simulation using the explicitly supplied configuration. The current execution implementation supports BPSK and QPSK over AWGN, Rayleigh, and Rician channels.
 
-### Run the AI copilot
+### 3. Run the AI copilot
 
-Endpoint: `POST /api/v1/copilot/run`
+`POST /api/v1/copilot/run`
 
-Example:
+Example request:
 
 ```json
 {
@@ -165,11 +276,11 @@ Example:
 }
 ```
 
-The copilot extracts and validates the configuration, retrieves relevant knowledge, runs the simulation, and returns simulated and theoretical BER values.
+The copilot retrieves relevant wireless knowledge, asks the local LLM to extract a configuration, validates the result, and runs the simulation if the configuration is valid.
 
 By default, constellation samples are omitted to keep the response compact.
 
-To include constellation samples:
+To request constellation samples:
 
 ```json
 {
@@ -178,91 +289,15 @@ To include constellation samples:
 }
 ```
 
-## Testing and Code Quality
+For the complete request and response schemas, use the interactive API documentation at `http://127.0.0.1:8000/docs`.
 
-Run the automated test suite:
+---
 
-```powershell
-python -m pytest
-```
+## LLM Benchmark Evaluation
 
-Run Ruff lint checks:
+The project includes separate development and held-out benchmark datasets for evaluating natural-language-to-configuration extraction.
 
-```powershell
-python -m ruff check .
-```
-
-Check code formatting:
-
-```powershell
-python -m ruff format --check .
-```
-
-Apply automatic formatting when required:
-
-```powershell
-python -m ruff format .
-```
-
-The latest verified development baseline is 46 passing tests. Re-run these checks after modifying code or dependencies.
-
-## Phase Completion Protocol
-
-At the end of every development phase, follow this checklist before starting the next phase:
-
-1. **Implementation:** Confirm that the planned features for the phase are implemented.
-2. **Validation:** Run relevant functional checks and regression tests.
-3. **Code quality:** Run Ruff lint and formatting checks.
-4. **Documentation:** Update this README with implemented capabilities, API changes, dependencies, setup changes, test results, and remaining limitations.
-5. **Review:** Inspect `git diff` and `git diff --check`; verify that no secrets or local environment files are included.
-6. **Version control:** Commit the implementation, tests, and documentation together using a descriptive commit message.
-7. **Roadmap:** Mark the phase complete only after its acceptance criteria have been met.
-
-Do not mark future or partially implemented capabilities as completed.
-
-## Reproducibility
-
-Simulation requests support explicit random seeds, configurable SNR ranges, and configurable bit counts. The API returns simulation parameters and BER results so that experiments can be reproduced and compared.
-
-Record dependency changes in `requirements.txt`. Keep model names, runtime configuration, test commands, and known limitations documented as the project evolves.
-
-## Safety and Limitations
-
-- Natural-language requests are converted into structured configurations rather than executable code.
-- Configuration values are validated before the trusted simulation engine runs.
-- Unsupported modulation schemes must not bypass validation.
-- RAG results are reference material and must not override explicit user parameters.
-
-### Phase 4 — Controlled Execution and Automatic Correction
-
-**Objective:** Improve the reliability of the AI copilot by evaluating LLM configuration extraction, handling failures consistently, and introducing bounded automatic correction.
-
-#### Phase 4.1A — Benchmark Dataset
-- [x] Create a benchmark dataset containing valid and invalid wireless simulation prompts.
-- [x] Define expected configurations for each benchmark case.
-- [x] Add dataset structure and uniqueness checks.
-- [x] Verify valid and invalid configurations using the existing configuration validator.
-
-#### Phase 4.2 — Error Classification and Handling
-- [x] Separate RAG retrieval, LLM extraction, configuration validation, and simulation execution errors.
-- [x] Return HTTP 422 for invalid simulation configurations.
-- [x] Return HTTP 503 for LLM and RAG service failures.
-- [x] Return HTTP 500 for unexpected simulation execution failures.
-- [x] Add server-side exception logging and safe API error messages.
-- [x] Add regression tests for RAG failures and invalid configurations reaching the simulator.
-
-
-#### Phase 4.1B — Actual LLM Benchmark Evaluation
-
-- [x] Evaluate the actual local Ollama model against development benchmark prompts.
-- [x] Compare extracted configurations against expected configurations.
-- [x] Calculate exact-match and field-level accuracy.
-- [x] Measure validation accuracy, extraction failures, and latency.
-- [x] Generate machine-readable evaluation reports.
-- [x] Create and evaluate a separate held-out benchmark dataset.
-- [x] Verify both datasets using automated dataset-integrity tests.
-
-**Evaluation configuration**
+### Evaluation setup
 
 | Setting | Value |
 |---|---|
@@ -272,7 +307,7 @@ Record dependency changes in `requirements.txt`. Keep model names, runtime confi
 | Simulation execution | Disabled |
 | Required configuration fields | 7 |
 
-**Development benchmark results**
+### Development benchmark
 
 | Metric | Result |
 |---|---:|
@@ -284,7 +319,7 @@ Record dependency changes in `requirements.txt`. Keep model names, runtime confi
 | Average latency | 9.74 seconds |
 | Timeouts | 0 |
 
-**Held-out benchmark results**
+### Held-out benchmark
 
 | Metric | Result |
 |---|---:|
@@ -300,40 +335,125 @@ Record dependency changes in `requirements.txt`. Keep model names, runtime confi
 | Maximum latency | 20.96 seconds |
 | Timeouts | 0 |
 
-**Evaluation commands**
+### Run the evaluations
+
+Run from the project root:
 
 ```powershell
 python -m scripts.evaluate_llm --dataset development
 python -m scripts.evaluate_llm --dataset heldout
 ```
 
-Reports are generated under `evaluation/reports/development/`
-and `evaluation/reports/heldout/`.
+Machine-readable reports are generated under:
 
-These results represent the current benchmark datasets and do not
-guarantee accuracy on arbitrary unseen prompts. Simulation execution
-was disabled to isolate extraction and validation performance.
+```text
+evaluation/reports/development/
+evaluation/reports/heldout/
+```
 
+**Interpretation:** These results describe the specific development and held-out datasets used in this evaluation. They do not establish 100% accuracy for arbitrary or unseen user prompts. Simulation execution was disabled during these benchmark runs so that extraction and validation performance could be evaluated separately.
 
-#### Phase 4.3 — Bounded Automatic Correction
-- [ ] Implement a maximum of one correction attempt for invalid LLM configurations.
-- [ ] Revalidate corrected configurations before simulation.
-- [ ] Prevent infinite correction loops.
-- [ ] Ensure invalid configurations never reach the simulation engine.
+---
 
-#### Phase 4.4 — Safety and Regression Testing
-- [ ] Test malformed LLM responses and unexpected service failures.
-- [ ] Verify correction behavior and retry limits.
-- [ ] Run the complete regression test suite.
-- [ ] Run Ruff lint and formatting checks.
+## Testing and Code Quality
 
-#### Phase 4.5 — Documentation and Release
-- [ ] Update README with implementation details, API behavior, evaluation results, and limitations.
-- [ ] Review changes and verify no secrets or unrelated files are committed.
-- [ ] Commit and push the completed Phase 4 implementation.
+Run the complete automated test suite:
 
-**Phase 4 completion criteria:** All implementation, evaluation, safety, regression, documentation, and Git acceptance checks must pass.
+```powershell
+python -m pytest
+```
 
-Current progress: Benchmark dataset creation, LLM evaluation,
-and error classification are implemented. Bounded correction,
-safety regression, and final release documentation remain pending.
+Run Ruff lint checks:
+
+```powershell
+python -m ruff check .
+```
+
+Check formatting:
+
+```powershell
+python -m ruff format --check .
+```
+
+Apply formatting if needed:
+
+```powershell
+python -m ruff format .
+```
+
+Check whitespace and patch errors before committing:
+
+```powershell
+git diff --check
+```
+
+The latest recorded verification baseline is **102 passing tests**, with Ruff lint, Ruff formatting, and `git diff --check` passing. Run these commands again after making changes and update this README if the verified results change.
+
+---
+
+## Development Roadmap
+
+| Phase | Description | Status |
+|---|---|---|
+| Phase 0 | Environment and project foundation | Complete |
+| Phase 1 | BPSK/QPSK simulation over AWGN | Complete |
+| Phase 2 | Rayleigh/Rician channel modeling and scientific validation | Complete |
+| Phase 3 | Ollama integration, wireless-domain RAG, validation, and copilot API | Complete |
+| Phase 4.1A | Benchmark dataset and integrity tests | Complete |
+| Phase 4.1B | Actual LLM development and held-out evaluation | Complete |
+| Phase 4.2 | Error classification and handling | Complete |
+| Phase 4.3 | Bounded automatic correction | Complete |
+| Phase 4.4 | Safety and regression testing | Complete |
+| Phase 4.5 | Documentation and release preparation | In progress |
+| Phase 5 | Wireless optimization | Planned |
+| Phase 6 | Optional fine-tuning and model evaluation | Planned |
+
+### Phase 5 â€” Wireless Optimization
+
+Explore adaptive modulation and parameter selection under BER or other communication constraints. This phase is planned and should not be considered implemented.
+
+### Phase 6 â€” Optional Fine-Tuning and Model Evaluation
+
+Evaluate whether fine-tuning or parameter-efficient methods such as QLoRA improve domain-specific configuration extraction. This phase is planned.
+
+---
+
+## Reproducibility
+
+Simulation requests support explicit random seeds, configurable SNR ranges, and configurable bit counts. The API returns simulation parameters and BER results to support repeatable experiments.
+
+For reproducible LLM evaluation, retain the benchmark datasets, model/runtime settings, and generated reports. Model output and latency can depend on the local runtime and hardware environment.
+
+---
+
+## Safety, Validation, and Limitations
+
+- Natural-language requests are converted into structured configuration values rather than executable code.
+- LLM output is validated before it can reach the simulation engine.
+- At most one bounded correction attempt is made for an invalid extracted configuration.
+- Invalid configurations must not reach the simulator.
+- Retrieved RAG content is reference material and must not override explicit user parameters.
+- Malformed model responses and service failures are handled through controlled error paths.
+- The current simulation execution path supports BPSK and QPSK; 16QAM and 64QAM execution is not currently supported.
+- Benchmark accuracy is measured on the included datasets and should not be generalized to all possible prompts.
+- The copilot depends on a running local Ollama service and the required models.
+- Wireless optimization, fine-tuning, and a graphical Streamlit interface are not presented as completed capabilities.
+
+---
+
+## Phase Completion and Release Checklist
+
+Before marking a development phase complete:
+
+1. Confirm that the planned implementation is complete.
+2. Run relevant functional checks and regression tests.
+3. Run the full test suite.
+4. Run Ruff lint and formatting checks.
+5. Update documentation for implemented features, API behavior, dependencies, setup, and limitations.
+6. Inspect `git diff` and run `git diff --check`.
+7. Verify that secrets, local environment files, temporary outputs, and unrelated files are not staged.
+8. Commit implementation, tests, and documentation with a descriptive commit message.
+9. Push the reviewed changes to the repository.
+10. Update the roadmap only after the phase acceptance criteria have been met.
+
+Do not mark planned or partially implemented capabilities as complete.
