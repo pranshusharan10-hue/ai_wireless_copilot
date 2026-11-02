@@ -13,7 +13,7 @@ class SimulationRequest(BaseModel):
     snr_start_db: float = 0
     snr_stop_db: float = 20
     snr_step_db: float = 2
-    num_bits: int = Field(default=100_000, ge=1000, le=2_000_000)
+    num_bits: int = Field(default=10_000, ge=1000, le=2_000_000)
     random_seed: int = 42
     rician_k_db: float = Field(default=6.0, ge=0, le=30)
 

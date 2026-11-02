@@ -10,7 +10,9 @@ The project combines wireless communication theory, Python-based simulation, lar
 
 ## Current Status
 
-**Current milestone: Phase 3 — LLM Integration and Wireless-Domain RAG**
+**Current milestone: Phase 4 — Controlled Execution and Automatic Correction**
+
+Current focus: LLM benchmarking, evaluation reliability, and bounded correction.
 
 Implemented and tested capabilities include:
 
@@ -25,8 +27,7 @@ Implemented and tested capabilities include:
 - Compact copilot responses by default, with optional constellation samples.
 - Automated tests for the simulation engine, API, configuration validation, RAG, and copilot workflow.
 
-Latest verified baseline: **46 tests passed**, Ruff checks passed, and the Starlette test-client deprecation warning was resolved in the development environment.
-
+Latest verified baseline: **59 tests passed**. Ruff lint and formatting checks passed, and `git diff --check` reported no whitespace errors.
 ## Technology Stack
 
 - **Language:** Python 3.11
@@ -250,12 +251,69 @@ Record dependency changes in `requirements.txt`. Keep model names, runtime confi
 - [x] Add server-side exception logging and safe API error messages.
 - [x] Add regression tests for RAG failures and invalid configurations reaching the simulator.
 
+
 #### Phase 4.1B — Actual LLM Benchmark Evaluation
-- [ ] Evaluate the actual local Ollama model against the benchmark prompts.
-- [ ] Compare extracted configurations against expected configurations.
-- [ ] Calculate exact-match and field-level accuracy.
-- [ ] Measure validation success, invalid-output rate, and extraction failures.
-- [ ] Generate a machine-readable evaluation report.
+
+- [x] Evaluate the actual local Ollama model against development benchmark prompts.
+- [x] Compare extracted configurations against expected configurations.
+- [x] Calculate exact-match and field-level accuracy.
+- [x] Measure validation accuracy, extraction failures, and latency.
+- [x] Generate machine-readable evaluation reports.
+- [x] Create and evaluate a separate held-out benchmark dataset.
+- [x] Verify both datasets using automated dataset-integrity tests.
+
+**Evaluation configuration**
+
+| Setting | Value |
+|---|---|
+| Model | `qwen2.5:3b` |
+| Runtime | Local Ollama |
+| Temperature | 0 |
+| Simulation execution | Disabled |
+| Required configuration fields | 7 |
+
+**Development benchmark results**
+
+| Metric | Result |
+|---|---:|
+| Total cases | 10 |
+| Successful extractions | 10/10 |
+| Exact configuration matches | 10/10 |
+| Field-level accuracy | 100% |
+| Validation accuracy | 100% |
+| Average latency | 9.74 seconds |
+| Timeouts | 0 |
+
+**Held-out benchmark results**
+
+| Metric | Result |
+|---|---:|
+| Total cases | 16 |
+| Successful extractions | 16/16 |
+| Exact configuration matches | 16/16 |
+| Field-level accuracy | 100% |
+| Validation accuracy | 100% |
+| Valid case acceptance | 100% |
+| Invalid case rejection | 100% |
+| Average latency | 8.63 seconds |
+| Median latency | 7.82 seconds |
+| Maximum latency | 20.96 seconds |
+| Timeouts | 0 |
+
+**Evaluation commands**
+
+```powershell
+python -m scripts.evaluate_llm --dataset development
+python -m scripts.evaluate_llm --dataset heldout
+```
+
+Reports are generated under `evaluation/reports/development/`
+and `evaluation/reports/heldout/`.
+
+These results represent the current benchmark datasets and do not
+guarantee accuracy on arbitrary unseen prompts. Simulation execution
+was disabled to isolate extraction and validation performance.
+
 
 #### Phase 4.3 — Bounded Automatic Correction
 - [ ] Implement a maximum of one correction attempt for invalid LLM configurations.
@@ -275,3 +333,7 @@ Record dependency changes in `requirements.txt`. Keep model names, runtime confi
 - [ ] Commit and push the completed Phase 4 implementation.
 
 **Phase 4 completion criteria:** All implementation, evaluation, safety, regression, documentation, and Git acceptance checks must pass.
+
+Current progress: Benchmark dataset creation, LLM evaluation,
+and error classification are implemented. Bounded correction,
+safety regression, and final release documentation remain pending.

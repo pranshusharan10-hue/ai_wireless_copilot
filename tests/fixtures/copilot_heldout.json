@@ -1,0 +1,226 @@
+[
+    {
+        "id": "heldout_valid_qpsk_awgn_negative_snr",
+        "prompt": "Run a QPSK experiment on an AWGN channel. Sweep Eb/N0 from -4 dB through 8 dB, increasing by 4 dB each time. Use 12000 bits.",
+        "expected_status": "valid",
+        "expected_config": {
+            "modulation": "QPSK",
+            "channel": "AWGN",
+            "snr_start_db": -4.0,
+            "snr_stop_db": 8.0,
+            "snr_step_db": 4.0,
+            "num_bits": 12000,
+            "rician_k_db": 6.0
+        }
+    },
+    {
+        "id": "heldout_valid_bpsk_rayleigh_custom_range",
+        "prompt": "I need a BPSK simulation with Rayleigh fading. Start the Eb/N0 sweep at 1 dB and end at 13 dB, using 3 dB intervals. Generate 24000 bits.",
+        "expected_status": "valid",
+        "expected_config": {
+            "modulation": "BPSK",
+            "channel": "Rayleigh",
+            "snr_start_db": 1.0,
+            "snr_stop_db": 13.0,
+            "snr_step_db": 3.0,
+            "num_bits": 24000,
+            "rician_k_db": 6.0
+        }
+    },
+    {
+        "id": "heldout_valid_qpsk_rician_custom_k",
+        "prompt": "Configure QPSK over a Rician fading channel with a K-factor of 4.5 dB. Evaluate from 0 dB to 9 dB in increments of 3 dB, using 16000 bits.",
+        "expected_status": "valid",
+        "expected_config": {
+            "modulation": "QPSK",
+            "channel": "Rician",
+            "snr_start_db": 0.0,
+            "snr_stop_db": 9.0,
+            "snr_step_db": 3.0,
+            "num_bits": 16000,
+            "rician_k_db": 4.5
+        }
+    },
+    {
+        "id": "heldout_valid_bpsk_rician_high_k",
+        "prompt": "Use BPSK with Rician fading and set the K factor to 9 dB. Test Eb/N0 values from -2 dB up to 10 dB, stepping by 4 dB. Set the bit count to 32000.",
+        "expected_status": "valid",
+        "expected_config": {
+            "modulation": "BPSK",
+            "channel": "Rician",
+            "snr_start_db": -2.0,
+            "snr_stop_db": 10.0,
+            "snr_step_db": 4.0,
+            "num_bits": 32000,
+            "rician_k_db": 9.0
+        }
+    },
+    {
+        "id": "heldout_valid_qpsk_rayleigh_negative_range",
+        "prompt": "Please evaluate QPSK under Rayleigh fading. The Eb/N0 sweep should begin at -6 dB and finish at 6 dB, with a 3 dB step. Use 8000 bits.",
+        "expected_status": "valid",
+        "expected_config": {
+            "modulation": "QPSK",
+            "channel": "Rayleigh",
+            "snr_start_db": -6.0,
+            "snr_stop_db": 6.0,
+            "snr_step_db": 3.0,
+            "num_bits": 8000,
+            "rician_k_db": 6.0
+        }
+    },
+    {
+        "id": "heldout_valid_bpsk_awgn_high_snr",
+        "prompt": "Set up a BPSK link with an AWGN channel. Measure performance between 5 dB and 17 dB Eb/N0, moving in 4 dB steps. Simulate 64000 bits.",
+        "expected_status": "valid",
+        "expected_config": {
+            "modulation": "BPSK",
+            "channel": "AWGN",
+            "snr_start_db": 5.0,
+            "snr_stop_db": 17.0,
+            "snr_step_db": 4.0,
+            "num_bits": 64000,
+            "rician_k_db": 6.0
+        }
+    },
+    {
+        "id": "heldout_valid_qpsk_awgn_noninteger_step",
+        "prompt": "For QPSK in an AWGN environment, calculate the BER over an Eb/N0 range of 0 to 15 dB with a 5 dB interval. Use 30000 transmitted bits.",
+        "expected_status": "valid",
+        "expected_config": {
+            "modulation": "QPSK",
+            "channel": "AWGN",
+            "snr_start_db": 0.0,
+            "snr_stop_db": 15.0,
+            "snr_step_db": 5.0,
+            "num_bits": 30000,
+            "rician_k_db": 6.0
+        }
+    },
+    {
+        "id": "heldout_valid_bpsk_rayleigh_large_bit_count",
+        "prompt": "Run BPSK through a Rayleigh fading channel. Use 100000 bits and evaluate Eb/N0 from 2 dB to 14 dB, with a 4 dB increment.",
+        "expected_status": "valid",
+        "expected_config": {
+            "modulation": "BPSK",
+            "channel": "Rayleigh",
+            "snr_start_db": 2.0,
+            "snr_stop_db": 14.0,
+            "snr_step_db": 4.0,
+            "num_bits": 100000,
+            "rician_k_db": 6.0
+        }
+    },
+    {
+        "id": "heldout_invalid_16qam_unsupported",
+        "prompt": "Run a 16QAM simulation over an AWGN channel from 0 dB to 12 dB in steps of 3 dB, using 12000 bits.",
+        "expected_status": "invalid",
+        "expected_config": {
+            "modulation": "16QAM",
+            "channel": "AWGN",
+            "snr_start_db": 0.0,
+            "snr_stop_db": 12.0,
+            "snr_step_db": 3.0,
+            "num_bits": 12000,
+            "rician_k_db": 6.0
+        }
+    },
+    {
+        "id": "heldout_invalid_128qam_unsupported",
+        "prompt": "Configure 128QAM with Rayleigh fading. Sweep from 0 dB to 12 dB in 3 dB steps and use 16000 bits.",
+        "expected_status": "invalid",
+        "expected_config": {
+            "modulation": "128QAM",
+            "channel": "Rayleigh",
+            "snr_start_db": 0.0,
+            "snr_stop_db": 12.0,
+            "snr_step_db": 3.0,
+            "num_bits": 16000,
+            "rician_k_db": 6.0
+        }
+    },
+    {
+        "id": "heldout_invalid_descending_snr",
+        "prompt": "Use BPSK over AWGN with an Eb/N0 sweep starting at 14 dB and ending at 2 dB. Set the step to 3 dB and use 10000 bits.",
+        "expected_status": "invalid",
+        "expected_config": {
+            "modulation": "BPSK",
+            "channel": "AWGN",
+            "snr_start_db": 14.0,
+            "snr_stop_db": 2.0,
+            "snr_step_db": 3.0,
+            "num_bits": 10000,
+            "rician_k_db": 6.0
+        }
+    },
+    {
+        "id": "heldout_invalid_zero_snr_step",
+        "prompt": "Simulate QPSK with Rayleigh fading from -2 dB to 10 dB, but keep the Eb/N0 step at 0 dB. Use 15000 bits.",
+        "expected_status": "invalid",
+        "expected_config": {
+            "modulation": "QPSK",
+            "channel": "Rayleigh",
+            "snr_start_db": -2.0,
+            "snr_stop_db": 10.0,
+            "snr_step_db": 0.0,
+            "num_bits": 15000,
+            "rician_k_db": 6.0
+        }
+    },
+    {
+        "id": "heldout_invalid_negative_bit_count",
+        "prompt": "Run BPSK over an AWGN channel from 0 dB to 10 dB in 2 dB steps, but set the number of bits to -5000.",
+        "expected_status": "invalid",
+        "expected_config": {
+            "modulation": "BPSK",
+            "channel": "AWGN",
+            "snr_start_db": 0.0,
+            "snr_stop_db": 10.0,
+            "snr_step_db": 2.0,
+            "num_bits": -5000,
+            "rician_k_db": 6.0
+        }
+    },
+    {
+        "id": "heldout_invalid_bit_count_below_minimum",
+        "prompt": "Set up QPSK with AWGN, using 500 bits only. Sweep Eb/N0 from 0 dB to 8 dB in 2 dB steps.",
+        "expected_status": "invalid",
+        "expected_config": {
+            "modulation": "QPSK",
+            "channel": "AWGN",
+            "snr_start_db": 0.0,
+            "snr_stop_db": 8.0,
+            "snr_step_db": 2.0,
+            "num_bits": 500,
+            "rician_k_db": 6.0
+        }
+    },
+    {
+        "id": "heldout_invalid_snr_above_limit",
+        "prompt": "Use BPSK with Rician fading and a K factor of 5 dB. Start Eb/N0 at 10 dB and stop at 65 dB, using 5 dB steps and 20000 bits.",
+        "expected_status": "invalid",
+        "expected_config": {
+            "modulation": "BPSK",
+            "channel": "Rician",
+            "snr_start_db": 10.0,
+            "snr_stop_db": 65.0,
+            "snr_step_db": 5.0,
+            "num_bits": 20000,
+            "rician_k_db": 5.0
+        }
+    },
+    {
+        "id": "heldout_invalid_negative_rician_k",
+        "prompt": "Configure QPSK on a Rician channel with a K-factor of -2 dB. Use an Eb/N0 range from 0 dB to 12 dB in 3 dB steps and 18000 bits.",
+        "expected_status": "invalid",
+        "expected_config": {
+            "modulation": "QPSK",
+            "channel": "Rician",
+            "snr_start_db": 0.0,
+            "snr_stop_db": 12.0,
+            "snr_step_db": 3.0,
+            "num_bits": 18000,
+            "rician_k_db": -2.0
+        }
+    }
+]

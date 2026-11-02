@@ -10,7 +10,8 @@
       "snr_start_db": 0,
       "snr_stop_db": 10,
       "snr_step_db": 2,
-      "num_bits": 10000
+      "num_bits": 10000,
+      "rician_k_db": 6.0
     }
   },
   {
@@ -23,7 +24,8 @@
       "snr_start_db": 0,
       "snr_stop_db": 12,
       "snr_step_db": 3,
-      "num_bits": 20000
+      "num_bits": 20000,
+      "rician_k_db": 6.0
     }
   },
   {
@@ -37,7 +39,7 @@
       "snr_stop_db": 8,
       "snr_step_db": 2,
       "num_bits": 10000,
-      "rician_k_db": 6
+      "rician_k_db": 6.0
     }
   },
   {
@@ -50,11 +52,12 @@
       "snr_start_db": 0,
       "snr_stop_db": 20,
       "snr_step_db": 2,
-      "num_bits": 10000
+      "num_bits": 10000,
+      "rician_k_db": 6.0
     }
   },
   {
-    "id": "valid_non_default_seed_not_requested",
+    "id": "valid_qpsk_rayleigh_nondefault_snr_bits",
     "prompt": "Run QPSK over Rayleigh fading from 2 to 10 dB in steps of 2 dB using 5000 bits",
     "expected_status": "valid",
     "expected_config": {
@@ -63,7 +66,8 @@
       "snr_start_db": 2,
       "snr_stop_db": 10,
       "snr_step_db": 2,
-      "num_bits": 5000
+      "num_bits": 5000,
+      "rician_k_db": 6.0
     }
   },
   {
@@ -76,7 +80,8 @@
       "snr_start_db": 0,
       "snr_stop_db": 10,
       "snr_step_db": 2,
-      "num_bits": 10000
+      "num_bits": 10000,
+      "rician_k_db": 6.0
     }
   },
   {
@@ -89,7 +94,8 @@
       "snr_start_db": 10,
       "snr_stop_db": 0,
       "snr_step_db": 2,
-      "num_bits": 10000
+      "num_bits": 10000,
+      "rician_k_db": 6.0
     }
   },
   {
@@ -102,7 +108,8 @@
       "snr_start_db": 0,
       "snr_stop_db": 10,
       "snr_step_db": 0,
-      "num_bits": 10000
+      "num_bits": 10000,
+      "rician_k_db": 6.0
     }
   },
   {
@@ -115,7 +122,8 @@
       "snr_start_db": 0,
       "snr_stop_db": 20,
       "snr_step_db": 2,
-      "num_bits": -1000
+      "num_bits": -1000,
+      "rician_k_db": 6.0
     }
   },
   {
@@ -128,7 +136,8 @@
       "snr_start_db": 0,
       "snr_stop_db": 100,
       "snr_step_db": 2,
-      "num_bits": 10000
+      "num_bits": 10000,
+      "rician_k_db": 6.0
     }
   }
 ]
