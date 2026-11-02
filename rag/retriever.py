@@ -24,7 +24,12 @@ KNOWLEDGE_DIR = Path(__file__).parent / "knowledge_base"
 
 
 def embed_texts(texts: list[str]) -> np.ndarray:
-    """Convert texts into embedding vectors using Ollama."""
+    """Convert texts into validated embedding vectors using Ollama."""
+
+    if not texts or any(
+        not isinstance(text, str) or not text.strip() for text in texts
+    ):
+        raise ValueError("Embedding input must contain non-empty text strings.")
 
     response = httpx.post(
         f"{OLLAMA_URL}/api/embed",
@@ -36,8 +41,37 @@ def embed_texts(texts: list[str]) -> np.ndarray:
     )
     response.raise_for_status()
 
-    embeddings = response.json()["embeddings"]
-    return np.asarray(embeddings, dtype=np.float32)
+    try:
+        payload = response.json()
+    except ValueError as exc:
+        raise ValueError("Ollama returned invalid JSON for embeddings.") from exc
+
+    if not isinstance(payload, dict) or "embeddings" not in payload:
+        raise ValueError("Ollama embedding response must contain 'embeddings'.")
+
+    try:
+        embeddings = np.asarray(payload["embeddings"], dtype=np.float64)
+    except (TypeError, ValueError) as exc:
+        raise ValueError("Ollama returned malformed embedding values.") from exc
+
+    if embeddings.ndim != 2:
+        raise ValueError("Embeddings must be a two-dimensional array.")
+
+    if embeddings.shape[0] != len(texts):
+        raise ValueError("Ollama returned an unexpected number of embeddings.")
+
+    if embeddings.shape[1] == 0:
+        raise ValueError("Embedding vectors must have a non-zero dimension.")
+
+    if not np.all(np.isfinite(embeddings)):
+        raise ValueError("Embedding vectors must contain only finite values.")
+
+    norms = np.linalg.norm(embeddings, axis=1)
+
+    if np.any(norms == 0):
+        raise ValueError("Embedding vectors must not be zero vectors.")
+
+    return embeddings.astype(np.float32)
 
 
 def load_documents() -> list[dict[str, str]]:
@@ -90,6 +124,9 @@ def retrieve(
         document_vectors = embed_texts([document["text"] for document in documents])
         query_vector = embed_texts([query])[0]
 
+        if document_vectors.shape[1] != query_vector.shape[0]:
+            raise ValueError("Document and query embedding dimensions do not match.")
+
     except (httpx.HTTPError, ValueError, KeyError, TypeError) as exc:
         raise RuntimeError(
             "Could not retrieve valid embeddings from Ollama. "
@@ -98,16 +135,19 @@ def retrieve(
         ) from exc
 
     # Cosine similarity: larger means more similar.
+    # Use float64 for the norm calculation to reduce overflow risk.
     document_norms = np.linalg.norm(
-        document_vectors,
+        document_vectors.astype(np.float64),
         axis=1,
-        keepdims=True,
     )
-    query_norm = np.linalg.norm(query_vector)
+    query_norm = np.linalg.norm(query_vector.astype(np.float64))
 
     similarities = (document_vectors @ query_vector) / (
-        document_norms[:, 0] * max(float(query_norm), 1e-12)
+        document_norms * max(float(query_norm), 1e-12)
     )
+
+    if not np.all(np.isfinite(similarities)):
+        raise RuntimeError("Embedding similarity calculation produced invalid values.")
 
     best_indices = np.argsort(similarities)[::-1][:top_k]
 

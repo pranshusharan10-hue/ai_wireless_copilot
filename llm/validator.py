@@ -1,4 +1,3 @@
-# the validation module
 """Validate LLM-generated wireless simulation configurations."""
 
 from pydantic import ValidationError
@@ -6,6 +5,10 @@ from pydantic import ValidationError
 from backend.schemas import SimulationRequest
 
 SUPPORTED_MODULATIONS = {"BPSK", "QPSK"}
+
+# Only fields belonging to the simulation configuration are accepted.
+# The original user prompt is supplied separately by the application.
+ALLOWED_CONFIG_FIELDS = set(SimulationRequest.model_fields) - {"prompt"}
 
 
 def validate_simulation_config(
@@ -17,11 +20,17 @@ def validate_simulation_config(
     if not isinstance(config, dict):
         raise ValueError("Configuration must be a JSON object.")
 
-    # Keep the original user prompt and validate all settings
-    # using the same schema as the API.
+    unexpected_fields = set(config) - ALLOWED_CONFIG_FIELDS
+
+    if unexpected_fields:
+        fields = ", ".join(sorted(str(field) for field in unexpected_fields))
+        raise ValueError(f"Unexpected configuration field(s): {fields}")
+
+    # The application always controls the original user prompt.
+    # LLM-generated configuration cannot replace it.
     request_data = {
-        "prompt": prompt,
         **config,
+        "prompt": prompt,
     }
 
     try:

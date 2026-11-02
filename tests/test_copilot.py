@@ -323,3 +323,102 @@ def test_copilot_does_not_retry_invalid_parameters(
     assert response.status_code == 422
     llm.assert_called_once()
     simulator.assert_not_called()
+
+
+@pytest.mark.parametrize(
+    "malicious_config",
+    [
+        {
+            **VALID_CONFIG,
+            "extra_instruction": "__import__('os').system('whoami')",
+        },
+        {
+            **VALID_CONFIG,
+            "num_bits": "__import__('os').system('whoami')",
+        },
+        {
+            **VALID_CONFIG,
+            "channel": "AWGN; os.system('whoami')",
+        },
+    ],
+)
+def test_copilot_blocks_executable_or_unexpected_llm_output(
+    monkeypatch,
+    malicious_config,
+):
+    llm = Mock(return_value=malicious_config)
+    simulator = Mock()
+
+    monkeypatch.setattr(main, "extract_simulation_config", llm)
+    monkeypatch.setattr(main, "execute_simulation", simulator)
+
+    response = client.post(
+        "/api/v1/copilot/run",
+        json={"prompt": "Simulate BPSK over AWGN"},
+    )
+
+    assert response.status_code == 422
+    simulator.assert_not_called()
+
+
+def test_copilot_does_not_expose_llm_internal_errors(monkeypatch):
+    sensitive_error = "C:\\Users\\Prans\\secret\\api_key.txt sk-test-secret-token"
+
+    def fail_llm(prompt, context="", retry_feedback=None):
+        raise main.LLMServiceError(sensitive_error)
+
+    monkeypatch.setattr(main, "extract_simulation_config", fail_llm)
+
+    response = client.post(
+        "/api/v1/copilot/run",
+        json={"prompt": "Simulate BPSK over AWGN"},
+    )
+
+    assert response.status_code == 503
+
+    body = response.text
+
+    assert "secret" not in body
+    assert "sk-test-secret-token" not in body
+    assert "C:\\Users" not in body
+    assert "Traceback" not in body
+
+
+def test_copilot_does_not_expose_rag_internal_errors(monkeypatch):
+    sensitive_error = "C:\\Users\\Prans\\private\\embedding_key.txt"
+
+    def fail_retrieval(prompt, top_k=3):
+        raise RuntimeError(sensitive_error)
+
+    monkeypatch.setattr(main, "retrieve", fail_retrieval)
+
+    response = client.post(
+        "/api/v1/copilot/run",
+        json={"prompt": "Simulate BPSK over AWGN"},
+    )
+
+    assert response.status_code == 503
+    assert sensitive_error not in response.text
+    assert "Traceback" not in response.text
+
+
+def test_copilot_does_not_expose_simulator_internal_errors(monkeypatch):
+    sensitive_error = "C:\\Users\\Prans\\private\\simulation.py"
+
+    monkeypatch.setattr(
+        main, "extract_simulation_config", lambda *args, **kwargs: VALID_CONFIG
+    )
+
+    def fail_simulation(request):
+        raise RuntimeError(sensitive_error)
+
+    monkeypatch.setattr(main, "execute_simulation", fail_simulation)
+
+    response = client.post(
+        "/api/v1/copilot/run",
+        json={"prompt": "Simulate BPSK over AWGN"},
+    )
+
+    assert response.status_code == 500
+    assert sensitive_error not in response.text
+    assert "Traceback" not in response.text
