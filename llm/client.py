@@ -164,6 +164,22 @@ SECURITY RULES:
 The application validator, not you, decides whether a
 configuration is valid.
 
+Supported modulation schemes for the Copilot API:
+- BPSK
+- QPSK
+
+Supported channel models:
+- AWGN
+- Rayleigh
+- Rician
+
+Do not return 16QAM, 64QAM, 256QAM, OFDM, or any other unsupported
+modulation or simulation mode for the Copilot API.
+
+If the user requests an unsupported modulation or simulation mode,
+do not silently replace it with BPSK or QPSK. Preserve the requested
+value so that application validation can reject it.
+
 Return all seven schema fields in every response.
 """
 

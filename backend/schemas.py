@@ -2,7 +2,7 @@ from typing import Literal
 
 from pydantic import BaseModel, Field, model_validator
 
-Modulation = Literal["BPSK", "QPSK", "16QAM", "64QAM"]
+Modulation = Literal["BPSK", "QPSK"]
 Channel = Literal["AWGN", "Rayleigh", "Rician"]
 
 

@@ -26,6 +26,16 @@ def validate_simulation_config(
         fields = ", ".join(sorted(str(field) for field in unexpected_fields))
         raise ValueError(f"Unexpected configuration field(s): {fields}")
 
+    # Reject unsupported modulation before Pydantic schema validation.
+    # This ensures users receive a clear, consistent error message.
+    modulation = config.get("modulation", "BPSK")
+
+    if modulation not in SUPPORTED_MODULATIONS:
+        raise ValueError(
+            f"{modulation} is not supported by the simulator. "
+            "Currently supported: BPSK and QPSK."
+        )
+
     # The application always controls the original user prompt.
     # LLM-generated configuration cannot replace it.
     request_data = {
@@ -37,12 +47,5 @@ def validate_simulation_config(
         request = SimulationRequest.model_validate(request_data)
     except ValidationError as exc:
         raise ValueError(f"Invalid simulation configuration:\n{exc}") from exc
-
-    # Our simulator currently implements BPSK and QPSK only.
-    if request.modulation not in SUPPORTED_MODULATIONS:
-        raise ValueError(
-            f"{request.modulation} is not supported by the simulator. "
-            "Currently supported: BPSK and QPSK."
-        )
 
     return request
