@@ -1,0 +1,586 @@
+{
+  "metadata": {
+    "description": "Controlled BER baseline simulations for Phase 5",
+    "num_bits": 100000,
+    "random_seed": 42,
+    "snr_grid_db": [
+      -2.0,
+      0.0,
+      2.0,
+      4.0,
+      6.0,
+      8.0,
+      10.0
+    ],
+    "confidence_level": 0.95,
+    "interval_method": "two_sided_clopper_pearson_exact"
+  },
+  "results": [
+    {
+      "modulation": "BPSK",
+      "channel": "AWGN",
+      "rician_k_db": null,
+      "num_bits": 100000,
+      "random_seed": 42,
+      "points": [
+        {
+          "ebn0_db": -2.0,
+          "errors": 13061,
+          "ber_simulated": 0.13061,
+          "ber_theoretical": 0.13064448852282923,
+          "ci_95_low": 0.12852719019913747,
+          "ci_95_high": 0.13271425989959718,
+          "rule_of_three_95_upper": null,
+          "theo_within_95_ci": true,
+          "rel_error": 0.00026398758354966435
+        },
+        {
+          "ebn0_db": 0.0,
+          "errors": 7920,
+          "ber_simulated": 0.0792,
+          "ber_theoretical": 0.07864960352514255,
+          "ci_95_low": 0.07753346071319829,
+          "ci_95_high": 0.08089099383426132,
+          "rule_of_three_95_upper": null,
+          "theo_within_95_ci": true,
+          "rel_error": 0.0069980832730009105
+        },
+        {
+          "ebn0_db": 2.0,
+          "errors": 3800,
+          "ber_simulated": 0.038,
+          "ber_theoretical": 0.03750612835892598,
+          "ci_95_low": 0.03682339102750727,
+          "ci_95_high": 0.03920350138844203,
+          "rule_of_three_95_upper": null,
+          "theo_within_95_ci": true,
+          "rel_error": 0.013167758515295674
+        },
+        {
+          "ebn0_db": 4.0,
+          "errors": 1208,
+          "ber_simulated": 0.01208,
+          "ber_theoretical": 0.012500818040737556,
+          "ci_95_low": 0.011412096377523877,
+          "ci_95_high": 0.012776422680491612,
+          "rule_of_three_95_upper": null,
+          "theo_within_95_ci": true,
+          "rel_error": 0.03366324022685535
+        },
+        {
+          "ebn0_db": 6.0,
+          "errors": 238,
+          "ber_simulated": 0.00238,
+          "ber_theoretical": 0.0023882907809328075,
+          "ci_95_low": 0.002087506846077622,
+          "ci_95_high": 0.0027019248406004713,
+          "rule_of_three_95_upper": null,
+          "theo_within_95_ci": true,
+          "rel_error": 0.003471428604505674
+        },
+        {
+          "ebn0_db": 8.0,
+          "errors": 24,
+          "ber_simulated": 0.00024,
+          "ber_theoretical": 0.00019090777407599314,
+          "ci_95_low": 0.00015377838990783492,
+          "ci_95_high": 0.00035708006713407544,
+          "rule_of_three_95_upper": null,
+          "theo_within_95_ci": true,
+          "rel_error": 0.25715152859340923
+        },
+        {
+          "ebn0_db": 10.0,
+          "errors": 2,
+          "ber_simulated": 2e-05,
+          "ber_theoretical": 3.872108215522038e-06,
+          "ci_95_low": 2.4221019627031557e-06,
+          "ci_95_high": 7.224498936502978e-05,
+          "rule_of_three_95_upper": null,
+          "theo_within_95_ci": true,
+          "rel_error": 4.1651448995734235
+        }
+      ]
+    },
+    {
+      "modulation": "QPSK",
+      "channel": "AWGN",
+      "rician_k_db": null,
+      "num_bits": 100000,
+      "random_seed": 42,
+      "points": [
+        {
+          "ebn0_db": -2.0,
+          "errors": 13188,
+          "ber_simulated": 0.13188,
+          "ber_theoretical": 0.13064448852282923,
+          "ci_95_low": 0.1297885573708416,
+          "ci_95_high": 0.13399281870350027,
+          "rule_of_three_95_upper": null,
+          "theo_within_95_ci": true,
+          "rel_error": 0.009457050130016565
+        },
+        {
+          "ebn0_db": 0.0,
+          "errors": 7850,
+          "ber_simulated": 0.0785,
+          "ber_theoretical": 0.07864960352514255,
+          "ci_95_low": 0.0768402607918849,
+          "ci_95_high": 0.08018423482779963,
+          "rule_of_three_95_upper": null,
+          "theo_within_95_ci": true,
+          "rel_error": 0.0019021523114827609
+        },
+        {
+          "ebn0_db": 2.0,
+          "errors": 3727,
+          "ber_simulated": 0.03727,
+          "ber_theoretical": 0.03750612835892598,
+          "ci_95_low": 0.03610440475224374,
+          "ci_95_high": 0.03846253155381794,
+          "rule_of_three_95_upper": null,
+          "theo_within_95_ci": true,
+          "rel_error": 0.006295727371971887
+        },
+        {
+          "ebn0_db": 4.0,
+          "errors": 1267,
+          "ber_simulated": 0.01267,
+          "ber_theoretical": 0.012500818040737556,
+          "ci_95_low": 0.011985947840464448,
+          "ci_95_high": 0.013382530352060419,
+          "rule_of_three_95_upper": null,
+          "theo_within_95_ci": true,
+          "rel_error": 0.013533671053455541
+        },
+        {
+          "ebn0_db": 6.0,
+          "errors": 273,
+          "ber_simulated": 0.00273,
+          "ber_theoretical": 0.0023882907809328075,
+          "ci_95_low": 0.002416101639861435,
+          "ci_95_high": 0.00307326832367507,
+          "rule_of_three_95_upper": null,
+          "theo_within_95_ci": false,
+          "rel_error": 0.14307689071836097
+        },
+        {
+          "ebn0_db": 8.0,
+          "errors": 18,
+          "ber_simulated": 0.00018,
+          "ber_theoretical": 0.00019090777407599314,
+          "ci_95_low": 0.00010668278553560077,
+          "ci_95_high": 0.00028446274179766835,
+          "rule_of_three_95_upper": null,
+          "theo_within_95_ci": true,
+          "rel_error": 0.05713635355494304
+        },
+        {
+          "ebn0_db": 10.0,
+          "errors": 1,
+          "ber_simulated": 1e-05,
+          "ber_theoretical": 3.872108215522038e-06,
+          "ci_95_low": 2.5317804779333164e-07,
+          "ci_95_high": 5.571516034775618e-05,
+          "rule_of_three_95_upper": null,
+          "theo_within_95_ci": true,
+          "rel_error": 1.5825724497867115
+        }
+      ]
+    },
+    {
+      "modulation": "BPSK",
+      "channel": "Rayleigh",
+      "rician_k_db": null,
+      "num_bits": 100000,
+      "random_seed": 42,
+      "points": [
+        {
+          "ebn0_db": -2.0,
+          "errors": 18992,
+          "ber_simulated": 0.18992,
+          "ber_theoretical": 0.18900836834134227,
+          "ci_95_low": 0.18749294909075093,
+          "ci_95_high": 0.1923650489213302,
+          "rule_of_three_95_upper": null,
+          "theo_within_95_ci": true,
+          "rel_error": 0.00482323437135525
+        },
+        {
+          "ebn0_db": 0.0,
+          "errors": 14670,
+          "ber_simulated": 0.1467,
+          "ber_theoretical": 0.1464466094067262,
+          "ci_95_low": 0.1445123931082375,
+          "ci_95_high": 0.14890811957703412,
+          "rule_of_three_95_upper": null,
+          "theo_within_95_ci": true,
+          "rel_error": 0.0017302592002662327
+        },
+        {
+          "ebn0_db": 2.0,
+          "errors": 10878,
+          "ber_simulated": 0.10878,
+          "ber_theoretical": 0.10848473204958436,
+          "ci_95_low": 0.10685655320691759,
+          "ci_95_high": 0.11072617043972788,
+          "rule_of_three_95_upper": null,
+          "theo_within_95_ci": true,
+          "rel_error": 0.0027217465982280423
+        },
+        {
+          "ebn0_db": 4.0,
+          "errors": 7712,
+          "ber_simulated": 0.07712,
+          "ber_theoretical": 0.07713691605639106,
+          "ci_95_low": 0.07547378142518164,
+          "ci_95_high": 0.07879079518550333,
+          "rule_of_three_95_upper": null,
+          "theo_within_95_ci": true,
+          "rel_error": 0.00021929910159614995
+        },
+        {
+          "ebn0_db": 6.0,
+          "errors": 5333,
+          "ber_simulated": 0.05333,
+          "ber_theoretical": 0.052998883925638784,
+          "ci_95_low": 0.05194534877252613,
+          "ci_95_high": 0.054740629814288566,
+          "rule_of_three_95_upper": null,
+          "theo_within_95_ci": true,
+          "rel_error": 0.006247604663256634
+        },
+        {
+          "ebn0_db": 8.0,
+          "errors": 3431,
+          "ber_simulated": 0.03431,
+          "ber_theoretical": 0.03545906762783807,
+          "ci_95_low": 0.03319034606594613,
+          "ci_95_high": 0.035456768709792384,
+          "rule_of_three_95_upper": null,
+          "theo_within_95_ci": false,
+          "rel_error": 0.03240546649162214
+        },
+        {
+          "ebn0_db": 10.0,
+          "errors": 2189,
+          "ber_simulated": 0.02189,
+          "ber_theoretical": 0.023268705377203824,
+          "ci_95_low": 0.020991975678114567,
+          "ci_95_high": 0.022815901746999885,
+          "rule_of_three_95_upper": null,
+          "theo_within_95_ci": false,
+          "rel_error": 0.05925148627110694
+        }
+      ]
+    },
+    {
+      "modulation": "QPSK",
+      "channel": "Rayleigh",
+      "rician_k_db": null,
+      "num_bits": 100000,
+      "random_seed": 42,
+      "points": [
+        {
+          "ebn0_db": -2.0,
+          "errors": 18526,
+          "ber_simulated": 0.18526,
+          "ber_theoretical": 0.18900836834134227,
+          "ci_95_low": 0.18285619810869477,
+          "ci_95_high": 0.1876820708606469,
+          "rule_of_three_95_upper": null,
+          "theo_within_95_ci": false,
+          "rel_error": 0.019831758637124705
+        },
+        {
+          "ebn0_db": 0.0,
+          "errors": 14574,
+          "ber_simulated": 0.14574,
+          "ber_theoretical": 0.1464466094067262,
+          "ci_95_low": 0.14355837855124995,
+          "ci_95_high": 0.14794219004049156,
+          "rule_of_three_95_upper": null,
+          "theo_within_95_ci": true,
+          "rel_error": 0.004825030839490033
+        },
+        {
+          "ebn0_db": 2.0,
+          "errors": 10960,
+          "ber_simulated": 0.1096,
+          "ber_theoretical": 0.10848473204958436,
+          "ci_95_low": 0.10767016088045045,
+          "ci_95_high": 0.11155251488238536,
+          "rule_of_three_95_upper": null,
+          "theo_within_95_ci": true,
+          "rel_error": 0.010280413928716627
+        },
+        {
+          "ebn0_db": 4.0,
+          "errors": 7841,
+          "ber_simulated": 0.07841,
+          "ber_theoretical": 0.07713691605639106,
+          "ci_95_low": 0.0767511379090115,
+          "ci_95_high": 0.08009336299187741,
+          "rule_of_three_95_upper": null,
+          "theo_within_95_ci": true,
+          "rel_error": 0.016504211066439903
+        },
+        {
+          "ebn0_db": 6.0,
+          "errors": 5349,
+          "ber_simulated": 0.05349,
+          "ber_theoretical": 0.052998883925638784,
+          "ci_95_low": 0.05210337450148737,
+          "ci_95_high": 0.05490259460638123,
+          "rule_of_three_95_upper": null,
+          "theo_within_95_ci": true,
+          "rel_error": 0.009266536160464987
+        },
+        {
+          "ebn0_db": 8.0,
+          "errors": 3594,
+          "ber_simulated": 0.03594,
+          "ber_theoretical": 0.03545906762783807,
+          "ci_95_low": 0.03479478568386947,
+          "ci_95_high": 0.037112230708131834,
+          "rule_of_three_95_upper": null,
+          "theo_within_95_ci": true,
+          "rel_error": 0.013563029271090057
+        },
+        {
+          "ebn0_db": 10.0,
+          "errors": 2349,
+          "ber_simulated": 0.02349,
+          "ber_theoretical": 0.023268705377203824,
+          "ci_95_low": 0.02256013743018899,
+          "ci_95_high": 0.024447639909155498,
+          "rule_of_three_95_upper": null,
+          "theo_within_95_ci": true,
+          "rel_error": 0.009510396870337993
+        }
+      ]
+    },
+    {
+      "modulation": "BPSK",
+      "channel": "Rician",
+      "rician_k_db": 6.0,
+      "num_bits": 100000,
+      "random_seed": 42,
+      "points": [
+        {
+          "ebn0_db": -2.0,
+          "errors": 15558,
+          "ber_simulated": 0.15558,
+          "ber_theoretical": 0.15571082080039608,
+          "ci_95_low": 0.15333852334980938,
+          "ci_95_high": 0.15784147232417312,
+          "rule_of_three_95_upper": null,
+          "theo_within_95_ci": true,
+          "rel_error": 0.0008401522753758015
+        },
+        {
+          "ebn0_db": 0.0,
+          "errors": 10621,
+          "ber_simulated": 0.10621,
+          "ber_theoretical": 0.10799116909686216,
+          "ci_95_low": 0.10430681290997855,
+          "ci_95_high": 0.10813606083887571,
+          "rule_of_three_95_upper": null,
+          "theo_within_95_ci": true,
+          "rel_error": 0.01649365509937711
+        },
+        {
+          "ebn0_db": 2.0,
+          "errors": 6695,
+          "ber_simulated": 0.06695,
+          "ber_theoretical": 0.06785837777930342,
+          "ci_95_low": 0.06540848881128641,
+          "ci_95_high": 0.06851668560905774,
+          "rule_of_three_95_upper": null,
+          "theo_within_95_ci": true,
+          "rel_error": 0.013386376288831376
+        },
+        {
+          "ebn0_db": 4.0,
+          "errors": 3860,
+          "ber_simulated": 0.0386,
+          "ber_theoretical": 0.038569312069188955,
+          "ci_95_low": 0.03741442726422004,
+          "ci_95_high": 0.039812429111097766,
+          "rule_of_three_95_upper": null,
+          "theo_within_95_ci": true,
+          "rel_error": 0.0007956566805235496
+        },
+        {
+          "ebn0_db": 6.0,
+          "errors": 2030,
+          "ber_simulated": 0.0203,
+          "ber_theoretical": 0.020166466686495074,
+          "ci_95_low": 0.019434871096044977,
+          "ci_95_high": 0.0211931066255437,
+          "rule_of_three_95_upper": null,
+          "theo_within_95_ci": true,
+          "rel_error": 0.006621552281855534
+        },
+        {
+          "ebn0_db": 8.0,
+          "errors": 1039,
+          "ber_simulated": 0.01039,
+          "ber_theoretical": 0.010047787584493938,
+          "ci_95_low": 0.00977075738266561,
+          "ci_95_high": 0.011037881751814112,
+          "rule_of_three_95_upper": null,
+          "theo_within_95_ci": true,
+          "rel_error": 0.03405848428107443
+        },
+        {
+          "ebn0_db": 10.0,
+          "errors": 525,
+          "ber_simulated": 0.00525,
+          "ber_theoretical": 0.004976886724244514,
+          "ci_95_low": 0.004811495753592354,
+          "ci_95_high": 0.005717564598276221,
+          "rule_of_three_95_upper": null,
+          "theo_within_95_ci": true,
+          "rel_error": 0.05487632949832601
+        }
+      ]
+    },
+    {
+      "modulation": "QPSK",
+      "channel": "Rician",
+      "rician_k_db": 6.0,
+      "num_bits": 100000,
+      "random_seed": 42,
+      "points": [
+        {
+          "ebn0_db": -2.0,
+          "errors": 15401,
+          "ber_simulated": 0.15401,
+          "ber_theoretical": 0.15571082080039608,
+          "ci_95_low": 0.15177785558390494,
+          "ci_95_high": 0.15626223148310156,
+          "rule_of_three_95_upper": null,
+          "theo_within_95_ci": true,
+          "rel_error": 0.010922945442413005
+        },
+        {
+          "ebn0_db": 0.0,
+          "errors": 10924,
+          "ber_simulated": 0.10924,
+          "ber_theoretical": 0.10799116909686216,
+          "ci_95_low": 0.10731296303921384,
+          "ci_95_high": 0.11118973374527447,
+          "rule_of_three_95_upper": null,
+          "theo_within_95_ci": true,
+          "rel_error": 0.011564194679823456
+        },
+        {
+          "ebn0_db": 2.0,
+          "errors": 6914,
+          "ber_simulated": 0.06914,
+          "ber_theoretical": 0.06785837777930342,
+          "ci_95_low": 0.06757514173260773,
+          "ci_95_high": 0.070729903800352,
+          "rule_of_three_95_upper": null,
+          "theo_within_95_ci": true,
+          "rel_error": 0.01888672058835245
+        },
+        {
+          "ebn0_db": 4.0,
+          "errors": 3853,
+          "ber_simulated": 0.03853,
+          "ber_theoretical": 0.038569312069188955,
+          "ci_95_low": 0.037345468981943894,
+          "ci_95_high": 0.03974139159660199,
+          "rule_of_three_95_upper": null,
+          "theo_within_95_ci": true,
+          "rel_error": 0.0010192577227831152
+        },
+        {
+          "ebn0_db": 6.0,
+          "errors": 1982,
+          "ber_simulated": 0.01982,
+          "ber_theoretical": 0.020166466686495074,
+          "ci_95_low": 0.018965069317645602,
+          "ci_95_high": 0.020702938870752054,
+          "rule_of_three_95_upper": null,
+          "theo_within_95_ci": true,
+          "rel_error": 0.017180336639094636
+        },
+        {
+          "ebn0_db": 8.0,
+          "errors": 991,
+          "ber_simulated": 0.00991,
+          "ber_theoretical": 0.010047787584493938,
+          "ci_95_low": 0.009305312360918193,
+          "ci_95_high": 0.010543361879384412,
+          "rule_of_three_95_upper": null,
+          "theo_within_95_ci": true,
+          "rel_error": 0.013713226253566116
+        },
+        {
+          "ebn0_db": 10.0,
+          "errors": 506,
+          "ber_simulated": 0.00506,
+          "ber_theoretical": 0.004976886724244514,
+          "ci_95_low": 0.004629640105776307,
+          "ci_95_high": 0.005519439157115388,
+          "rule_of_three_95_upper": null,
+          "theo_within_95_ci": true,
+          "rel_error": 0.016699852811719915
+        }
+      ]
+    }
+  ],
+  "outlier_investigation": [
+    {
+      "modulation": "QPSK",
+      "channel": "AWGN",
+      "ebn0_db": 6.0,
+      "theoretical_ber": 0.0023882907809328075,
+      "num_seeds": 20,
+      "num_bits_per_seed": 100000,
+      "ensemble_mean_ber": 0.0024205,
+      "ensemble_sem": 3.660942501597095e-05,
+      "ensemble_z_score": 0.8798067452067615,
+      "statistically_consistent": true
+    },
+    {
+      "modulation": "BPSK",
+      "channel": "Rayleigh",
+      "ebn0_db": 8.0,
+      "theoretical_ber": 0.03545906762783807,
+      "num_seeds": 20,
+      "num_bits_per_seed": 100000,
+      "ensemble_mean_ber": 0.0355985,
+      "ensemble_sem": 0.00010098794873386476,
+      "ensemble_z_score": 1.380683278649184,
+      "statistically_consistent": true
+    },
+    {
+      "modulation": "BPSK",
+      "channel": "Rayleigh",
+      "ebn0_db": 10.0,
+      "theoretical_ber": 0.023268705377203824,
+      "num_seeds": 20,
+      "num_bits_per_seed": 100000,
+      "ensemble_mean_ber": 0.023370499999999995,
+      "ensemble_sem": 9.678101977905426e-05,
+      "ensemble_z_score": 1.0518035770708203,
+      "statistically_consistent": true
+    },
+    {
+      "modulation": "QPSK",
+      "channel": "Rayleigh",
+      "ebn0_db": -2.0,
+      "theoretical_ber": 0.18900836834134227,
+      "num_seeds": 20,
+      "num_bits_per_seed": 100000,
+      "ensemble_mean_ber": 0.18936650000000002,
+      "ensemble_sem": 0.00036224321213356434,
+      "ensemble_z_score": 0.9886497432164516,
+      "statistically_consistent": true
+    }
+  ]
+}

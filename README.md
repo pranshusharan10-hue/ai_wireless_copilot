@@ -1,41 +1,50 @@
-﻿# AI-Wireless Copilot
+# AI-Wireless Copilot
 
-**LLM-Assisted Wireless Communication Simulation and Optimization**
+**Towards Trustworthy LLM-Assisted Wireless Simulation: Physics-Aware Configuration Validation and BER Verification**
 
-AI-Wireless Copilot is a wireless communication simulation project that combines Python-based communication models with a local Large Language Model (LLM) and Retrieval-Augmented Generation (RAG).
+AI-Wireless Copilot is a research and simulation framework investigating how to eliminate silent physical and statistical errors in Large Language Model (LLM)-assisted link-level digital communication simulations.
 
-The project converts natural-language wireless simulation requests into structured configurations, validates the configurations, executes trusted simulation code, and returns quantitative results.
-
-It also contains standalone implementations for 16-QAM and OFDM simulations.
+The framework pairs natural-language understanding with Python-based numerical communications engines. Unlike naive direct prompting or standard RAG setups that only check for JSON syntax or runtime crashes, this project establishes a research foundation to quantify and eliminate **silent physical errors** (such as $E_b/N_0$ vs $E_s/N_0$ convention confusion, Monte Carlo sample starvation, and contradictory physical constraints).
 
 ---
 
-## 1. Project Status
+## 1. Project Status and Research Framing
 
-**Current milestone:** phase 4
-**Current activity:** Phase 4.5 — Documentation and Release Preparation (final verification).
+**Current Milestone:** Phase 5 — Research Foundation, Repository Audit, BER Baseline and Benchmark Preparation.
+**Prior Milestones:** Phase 0–4.5 (Core single-carrier simulations, standalone 16-QAM/OFDM, FastAPI endpoints, Ollama LLM extraction, and RAG integration).
+
+### Central Research Question
+> *"Can physics-aware configuration validation and BER result verification reduce silent errors in LLM-assisted link-level simulations compared with direct prompting and RAG alone?"*
+
+### Experimental Methods Under Investigation
+- **M1:** Direct LLM prompting (baseline parameter extraction from natural language).
+- **M2:** LLM + Retrieval-Augmented Generation (RAG) using wireless communication knowledge corpus.
+- **M3:** LLM + RAG + Physics-Aware Validation (deterministic domain consistency rules and sample size checks with bounded correction).
+- **M4:** M3 + Independent BER Verification (closed-form analytical boundary checking, Clopper-Pearson 95% confidence intervals, and Rule-of-Three zero-error bounds).
+
+*Phase 5 establishes the research foundation, mathematical baseline audit, fixed 78-case benchmark, formal metric specifications, and model-agnostic experiment runner. M3 and M4 implementations will be realized in Phase 6.*
 
 ### Implemented capabilities
 
-- BPSK and QPSK modulation and demodulation.
-- BER-versus-Eb/N0 simulation over AWGN, Rayleigh, and Rician fading channels.
-- Theoretical BER calculations for supported BPSK/QPSK channel combinations.
+- Coherent BPSK and Gray-coded QPSK modulation and demodulation ($E_s = 1$).
+- Coherent BER-versus-$E_b/N_0$ simulation over AWGN, Rayleigh, and Rician flat-fading channels with ideal receiver CSI equalization.
+- Theoretical closed-form BER calculations for supported BPSK/QPSK channel combinations (AWGN error function, Rayleigh closed form, Craig MGF numerical quadrature for Rician fading).
+- Mathematical baseline verification with Clopper-Pearson 95% confidence intervals and Rule-of-Three zero-error upper bounds.
+- Fixed 78-case benchmark dataset across 8 comprehensive research categories (A through H) with author-curated ground truth (status pending independent review).
+- Model-agnostic LLM provider abstraction supporting local Ollama (`qwen2.5:3b`) and remote OpenAI-compatible/vLLM endpoints (`mistral:7b`).
+- Machine-readable experiment configuration and run summary schemas (`runner/experiment_config.py`, `runner/experiment_result.py`).
 - Configurable SNR ranges, bit counts, random seeds, and Rician K-factor.
 - FastAPI endpoints for health checks, request validation, direct simulation, and natural-language Copilot requests.
 - Local LLM integration through Ollama.
-- Wireless-domain knowledge retrieval using Ollama embeddings and cosine similarity.
+- Wireless-domain knowledge retrieval using Ollama embeddings (`nomic-embed-text`) and cosine similarity.
 - Pydantic-based validation of extracted configurations.
 - At most one bounded correction attempt for an invalid LLM-generated configuration.
 - Defensive handling of malformed LLM responses and LLM, RAG, validation, and simulation failures.
-- Security regression tests for untrusted prompts, retrieved context, malformed configurations, and safe error handling.
-- Development and held-out benchmark datasets for LLM configuration extraction.
-- Machine-readable benchmark reports.
-- Optional constellation samples in Copilot responses.
-- Standalone Gray-coded 16-QAM modulation and demodulation.
-- Standalone 16-QAM BER simulation over AWGN, Rayleigh, and Rician channels.
+- Security regression tests for untrusted prompts, prompt injections, malformed configurations, and safe error handling.
+- Standalone Gray-coded 16-QAM modulation, demodulation, and BER simulation.
 - Standalone OFDM simulation using QPSK and 16-QAM over AWGN and multipath Rayleigh channels.
 
-**Latest verification:** 152 automated tests passed. Ruff linting, Ruff formatting checks, and `git diff --check` passed during Phase 4.5 verification.
+**Latest verification:** 179 automated tests passed (152 existing regression tests + 4 BER baseline tests + 10 benchmark schema tests + 13 experiment configuration & provider tests). Ruff linting, Ruff formatting checks, and `git diff --check` passing.
 
 ---
 
@@ -472,19 +481,26 @@ Update the test count in this README only after running the full test suite.
 | Phase 4.2 | Error classification and handling | Complete |
 | Phase 4.3 | Bounded automatic correction | Complete |
 | Phase 4.4 | Safety and regression testing | Complete |
-| Phase 4.5 | Documentation and release preparation | In progress |
-| Phase 5 | Wireless optimization | Planned |
-| Phase 6 | Optional fine-tuning and model evaluation | Planned |
+| Phase 4.5 | Documentation and release preparation | Complete |
+| Phase 5 | Research foundation, repository audit, BER baseline & benchmark prep | Complete |
+| Phase 6 | Physics-aware validation (M3), BER verifier (M4) & comparative evaluation | Planned |
 
-### Phase 5 — Wireless Optimization
+### Phase 5 — Research Foundation, Repository Audit, BER Baseline & Benchmark Preparation (Completed)
 
-Potential future work includes adaptive modulation, parameter selection, and optimization under BER or other communication constraints.
+- Repository & Git audit with architectural gap analysis.
+- Mathematical baseline verification with Clopper-Pearson 95% confidence intervals and Rule-of-Three zero-error bounds.
+- Systematic review and positioning against literature (IPCCC 2024, AutoNetSim ICNP 2026, WirelessLLM JCIN 2024, Neurocomputing 2025).
+- Fixed, versioned 78-case benchmark dataset across 8 research categories (A–H) with author-curated ground truth (status pending independent review).
+- Formal definitions for CVR, PCR, SER, TCR, BVE, and Latency Overhead metrics.
+- Model-agnostic inference provider abstraction and machine-readable experiment schemas (`runner/experiment_config.py`).
+- Automated regression suite expanded to 179 passing tests.
 
-### Phase 6 — Optional Fine-Tuning and Model Evaluation
+### Phase 6 — Physics-Aware Validation, BER Verification & Multi-Model Evaluation (Planned)
 
-Evaluate whether fine-tuning or parameter-efficient techniques such as QLoRA improve domain-specific configuration extraction.
-
-These phases are planned and should not be considered implemented.
+- Implement the deterministic physics-aware validation layer (M3) checking SNR conventions, physical contradictions, and sample-size adequacy ($N_{\text{err}} \ge 100$).
+- Implement the independent closed-form BER verification layer (M4) with confidence-interval gating.
+- Execute comparative benchmark evaluations across M1, M2, M3, and M4 using local Qwen 2.5 3B and Mistral 7B on Kaggle/DGX.
+- Quantify silent error reduction across all methods.
 
 ---
 
